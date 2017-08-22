@@ -9,6 +9,7 @@ services:
     environment:
       - "DPP_REDIS_HOST=redis"
       - "DPP_DB_ENGINE=postgresql://postgres:123456@datadb:5432/postgres"
+      - "DPP_ELASTICSEARCH=elasticsearch:9200"
       - "DPP_WORKER_CONCURRENCY=4"
     volumes:
       - ./:/pipelines
