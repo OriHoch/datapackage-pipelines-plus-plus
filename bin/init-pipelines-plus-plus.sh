@@ -6,6 +6,7 @@ BASEURL="https://raw.githubusercontent.com/${GITHUB_REPO}/${BRANCH}"
 BASENAME=`basename $PWD`
 
 function copy() {
+    echo "${BASEURL}/${1} > ${1}"
     curl "${BASEURL}/${1}" > "${1}"
 }
 
@@ -18,6 +19,10 @@ if [ "${BASENAME}" != "datapackage-pipelines-plus-plus" ]; then
     copy bin/update_compose.sh
     copy bin/dpp.sh
     copy bin/install.sh
+    if [ -f requirements.txt ]; then
+        echo "moved existing requirements file to requirements.txt.bak"
+        mv requirements.txt requirements.txt.bak
+    fi
     copy requirements.txt
     echo "-e https://github.com/OriHoch/datapackage-pipelines-plus-plus.git" >> requirements.txt
     copy docker-compose.override.example.yml
