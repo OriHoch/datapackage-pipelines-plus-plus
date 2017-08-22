@@ -1,0 +1,34 @@
+datapackage_pipelines_plus_plus_noise_test:
+  pipeline:
+    - run: add_metadata
+      parameters:
+        name: datapackage_pipelines_plus_plus_noise
+    - run: plus_plus.noise
+      parameters:
+        resource: noise
+        num-rows: 100000
+        schema:
+          fields:
+            name: string
+            sheet: integer
+            value: number
+    - run: plus_plus.enumerate
+      parameters:
+        resource: noise
+        primary-key: true
+        field: id
+    - run: plus_plus.dump_to_sql
+      parameters:
+        resource: noise
+        table: datapackage_pipelines_plus_plus_noise
+        drop-table: true
+        commit-every: 25000
+    - run: plus_plus.dump_to_elasticsearch
+      parameters:
+        resource: noise
+        index-name: datapackage_pipelines_plus_plus_noise
+        drop-index: true
+        commit-every: 25000
+    - run: dump.to_path
+      parameters:
+        out-path: ./data/datapackage_pipelines_plus_plus_noise

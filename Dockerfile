@@ -17,6 +17,8 @@ RUN apk add --update --no-cache git
 COPY requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
+COPY ./entrypoint.sh /entrypoint.sh
+
 RUN mkdir /pipelines
 WORKDIR /pipelines
 COPY . /pipelines/
@@ -25,7 +27,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN cd /pipelines && pip install .
 
-ENTRYPOINT ["/pipelines/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 5000
-VOLUME /pipelines/data
+VOLUME /pipelines

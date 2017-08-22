@@ -1,1 +1,2 @@
 datapackage-pipelines==1.1.8
+elasticsearch==5.4.0
