@@ -17,6 +17,9 @@ if [ "${BASENAME}" != "datapackage-pipelines-plus-plus" ]; then
     copy bin/init-pipelines-plus-plus.sh
     copy bin/update_compose.sh
     copy bin/dpp.sh
+    copy bin/install.sh
+    copy requirements.txt
+    echo "-e https://github.com/OriHoch/datapackage-pipelines-plus-plus.git" >> requirements.txt
     copy docker-compose.override.example.yml
     copy docker-compose.yml
     copy pipeline-spec.yaml
