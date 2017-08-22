@@ -19,7 +19,7 @@ if [ "${BASENAME}" != "datapackage-pipelines-plus-plus" ]; then
     copy bin/dpp.sh
     copy docker-compose.override.example.yml
     copy docker-compose.yml
-
+    copy pipeline-spec.yaml
     chmod +x bin/*.sh
 fi
 
