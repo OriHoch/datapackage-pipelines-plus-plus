@@ -13,22 +13,26 @@ function copy() {
 if [ "${BASENAME}" != "datapackage-pipelines-plus-plus" ]; then
     # this initiates a new pipelines plus plus project in a different directory
     # it copies the latest files from github master
+    #
+    # it will overwrite any existing files, but all these files are supposed to be in Git
+
     mkdir -p bin
-    copy bin/start.sh
-    copy bin/init-pipelines-plus-plus.sh
-    copy bin/update_compose.sh
     copy bin/dpp.sh
+    copy bin/init-pipelines-plus-plus.sh
     copy bin/install.sh
-    if [ -f requirements.txt ]; then
-        echo "moved existing requirements file to requirements.txt.bak"
-        mv requirements.txt requirements.txt.bak
-    fi
-    copy requirements.txt
-    echo "-e https://github.com/OriHoch/datapackage-pipelines-plus-plus.git" >> requirements.txt
+    copy bin/start.sh
+    copy bin/update_compose.sh
+    chmod +x bin/*.sh
+
+    copy .env.example
+    copy .gitignore
     copy docker-compose.override.example.yml
     copy docker-compose.yml
-    copy pipeline-spec.yaml
-    chmod +x bin/*.sh
+    copy plus_plus.source-spec.yaml
+    copy plus_plus.source-spec.override.example.yaml
+    copy requirements.txt
+    echo "-e git+https://github.com/OriHoch/datapackage-pipelines-plus-plus.git#egg=datapackage_pipelines_plus_plus[develop]" >> requirements.txt
+    if [ ! -f docker-compose.override.yml ]; then
+        cp docker-compose.override.example.yml docker-compose.override.yml
+    fi
 fi
-
-bin/update_compose.sh

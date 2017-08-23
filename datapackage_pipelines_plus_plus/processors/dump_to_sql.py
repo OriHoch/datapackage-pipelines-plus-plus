@@ -61,9 +61,6 @@ class Processor(BaseDumpProcessor):
                                                                    self._get_stat("updated rows", 0),
                                                                    self._get_stat("inserted rows", 0)))
         # force a new session on next commit
-        self._db_delete_session()
-
-    def _db_delete_session(self):
         self._db_session = None
 
     def _filter_resource(self, resource_data):
@@ -75,7 +72,7 @@ class Processor(BaseDumpProcessor):
         table = self.db_meta.tables.get(self._tablename)
         if table is not None and self._parameters.get("drop-table"):
             table.drop()
-            self._db_delete_session()
+            self._db_session = None
             self._db_meta = None
             self._set_stat("dropped table", True)
             logging.info("table dropped: {}".format(self._tablename))

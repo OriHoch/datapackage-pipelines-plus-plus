@@ -1,16 +1,17 @@
-datapackage_pipelines_plus_plus_noise_test:
+noise:
   pipeline:
     - run: add_metadata
       parameters:
-        name: datapackage_pipelines_plus_plus_noise
+        name: noise
     - run: plus_plus.noise
       parameters:
         resource: noise
         num-rows: 100000
+        stop-after-seconds: 1
         schema:
           fields:
             name: string
-            sheet: integer
+            sheet: sheet_{j}
             value: number
     - run: plus_plus.enumerate
       parameters:

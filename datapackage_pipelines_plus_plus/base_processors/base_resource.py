@@ -36,8 +36,13 @@ class BaseResourceProcessor(BaseProcessor):
                 yield resource_data
 
     def _filter_resource(self, resource_data):
+        self._delay_limit_initialize()
         for row in resource_data:
-            yield from self._filter_row(row)
+            for row in self._filter_row(row):
+                if self._delay_limit_check():
+                    self._incr_stat("delay limit skipped rows")
+                else:
+                    yield row
 
     def _filter_row(self, row):
         yield {field_name: self._filter_row_value(field_name, value)

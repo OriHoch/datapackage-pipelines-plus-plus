@@ -8,9 +8,8 @@ Enhance the datapackage-pipelines framework with some more opinionated architect
 * Object oriented processors - allows for extensibility and code re-use.
 * Docker compose stack - allows for a complex architecture which is easy to setup and ensured to be the same across environments.
 
-## Usage
 
-### Quickstart
+## Installation
 
 The common usage is to start a new code repository which will use the pipelines plus plus framework.
 
@@ -20,28 +19,67 @@ Run the following command from within the new (or exising) project directory:
 
 * `source <(curl -s https://raw.githubusercontent.com/OriHoch/datapackage-pipelines-plus-plus/master/bin/init-pipelines-plus-plus.sh)`
 
-You can start the docker compose services by running:
+
+## Usage
+
+Following guide can be used from within any pipelines plus plus compatible project
+
+Only pre-requisite is to have Docker and Docker Compose installed - refer to Docker documentation for details.
+
+Start the docker compose services in the background by running:
 
 * `bin/start.sh`
 
-By default it provides the following services:
+You can check the pipelines status in the dashboard -
 
-* Pipelines Dashboard - http://localhost:5000
+* http://localhost:5000
+
+if it fails, it's possible elasticsearch haven't started yet, or there might be a problem with one of the services
+
+* View pipelines logs
+  * `docker-compose logs pipelines`
+* Restart pipelines service - will re-run failed pipelines
+  * `docker-compose restart pipelines`
+
+You can also run pipelines manually:
+
+* View the list of available pipelines:
+  * `bin/dpp.sh`
+* Run a pipeline
+  * `bin/dpp.sh run ./pipeline/id`
+
+The default pipeline environment provides the following possible outputs for the pipeliens:
+
+* Data files - should appear on the host under data/ directory
 * Kibana - http://localhost:15601
-* Elasticsearch - http://localhost:19200
-* PostgreSQL - postgresql://postgres:123456@datadb:5432/postgres
+  * Uses Elasticsearch on http://localhost:19200
 * Adminer (DB admin web ui) - http://localhost:18080
+  * Can be configured to connect to PostgreSQL - postgresql://postgres:123456@datadb:5432/postgres
 
-It also includes an example pipeline-spec.yaml file which generates some noise.
+Edit the docker-compose.override.yaml to enable additional services like Redash or edit the stack configuration.
 
-You can check the pipeline status in the dashboard - if it fails, it's possible elasticsearch haven't started yet.
+## Advanced Usage
 
-In that case you need to wait a minute and then restart the pipelines service:
+### Running locally - without Docker
 
-* `docker-compose restart pipelines`
+The only prerequisite is to be inside an activated Python 3.6 virtualenv
 
-Now you should see the noise pipeline running.
+From inside the virtualenv, run:
 
-While it's running you can log into Adminer and Kibana to see the data as it's being committed.
+* `bin/install.sh`
 
-A datapackage is generated under data/ directory
+This should install the required dependencies
+
+To run the pipelines CLI you need to setup some environment variables
+
+If the default docker stack is started, you can run:
+
+* `source .env.example`
+
+Otherwise, copy the file to .env, modify the environment variables
+
+Once you set the environment variables, and ensured services are running, you can run the dpp cli directly:
+
+* `dpp`
+* `dpp run ./pipeline/id`
+

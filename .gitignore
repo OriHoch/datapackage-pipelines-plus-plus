@@ -101,9 +101,11 @@ ENV/
 .mypy_cache/
 
 /.idea
-/.data.db
-/.dpp.db
-/docker-compose.override.yml
-/docker-compose.override.yml.bak
+.data.db
+.dpp.db
+docker-compose.override.yml
+docker-compose.override.yml.bak
 /celerybeat*
-/data
+requirements.txt.bak
+.gitignore.bak
+plus_plus.source-spec.override.yaml

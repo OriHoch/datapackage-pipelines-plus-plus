@@ -2,8 +2,10 @@ import os, logging
 from elasticsearch import Elasticsearch
 
 
-def get_engine():
-    engine = Elasticsearch(hosts=[os.environ.get("DPP_ELASTICSEARCH", "localhost:9200")])
+def get_engine(hosts=None):
+    if not hosts:
+        hosts = [os.environ.get("DPP_ELASTICSEARCH", "localhost:9200")]
+    engine = Elasticsearch(hosts=hosts)
     try:
         if not engine.ping():
             raise Exception("failed to ping server")

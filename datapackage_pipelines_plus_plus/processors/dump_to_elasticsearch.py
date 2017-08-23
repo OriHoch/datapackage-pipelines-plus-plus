@@ -11,7 +11,9 @@ class Processor(BaseDumpProcessor):
             name = field["name"]
             type = field["type"]
             mapping = None
-            if name in self._update_keys:
+            if field.get("es:type"):
+                mapping = {"type": field["es:type"]}
+            elif name in self._update_keys:
                 mapping = {"type": "keyword"}
             elif type == "string":
                 mapping = {"type": "text"}
