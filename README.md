@@ -7,48 +7,61 @@ Enhance the datapackage-pipelines framework with some more opinionated architect
 
 * Object oriented processors - allows for extensibility and code re-use.
 * Docker compose stack - allows for a complex architecture which is easy to setup and ensured to be the same across environments.
+* Custom processors with additional functionality.
 
 
 ## Installation
 
 The common usage is to start a new code repository which will use the pipelines plus plus framework.
 
-First, make sure you install Docker and Docker Compose - refer to Docker documentation for details.
-
 Run the following command from within the new (or exising) project directory:
 
 * `source <(curl -s https://raw.githubusercontent.com/OriHoch/datapackage-pipelines-plus-plus/master/bin/init-pipelines-plus-plus.sh)`
 
+This creates the necessary files with an example pipeline which should get you started quickly.
+
+You should edit the README.md file and keep only the parts after the Usage header
+
 
 ## Usage
 
-Following guide can be used from within any pipelines plus plus compatible project
+Following guide can be used from within any pipelines plus plus compatible project.
 
 Only pre-requisite is to have Docker and Docker Compose installed - refer to Docker documentation for details.
+
+
+### Starting the services
 
 Start the docker compose services in the background by running:
 
 * `bin/start.sh`
 
-You can check the pipelines status in the dashboard -
+If you encounter any problems, check you docker-compose.override.yml file
+
+* The docker-compose.override.yml file contains the docker compose stack and services configuration
+* The initialization script creates it as a copy of docker-compose.override.example.yml file
+
+
+### Running and debugging pipelines
+
+Once the docker services are running you should be able to see the pipelines dashboard at:
 
 * http://localhost:5000
 
-if it fails, it's possible elasticsearch haven't started yet, or there might be a problem with one of the services
+The dashboard shows the status of the pipelines which are configured in the `plus_plus.source-spec.yaml` file
+
+Usual workflow for debugging a failing pipeline:
 
 * View pipelines logs
   * `docker-compose logs pipelines`
 * Restart pipelines service - will re-run failed pipelines
   * `docker-compose restart pipelines`
-
-You can also run pipelines manually:
-
 * View the list of available pipelines:
   * `bin/dpp.sh`
-* Run a pipeline
+* Run a pipeline manually
   * `bin/dpp.sh run ./pipeline/id`
 
-The default pipeline environment provides the following possible outputs for the pipeliens:
+The default pipeline environment provides the following services:
 
 * Data files - should appear on the host under data/ directory
 * Kibana - http://localhost:15601
@@ -58,7 +71,9 @@ The default pipeline environment provides the following possible outputs for the
 
 Edit the docker-compose.override.yaml to enable additional services like Redash or edit the stack configuration.
 
+
 ## Advanced Usage
+
 
 ### Running locally - without Docker
 
@@ -83,3 +98,13 @@ Once you set the environment variables, and ensured services are running, you ca
 * `dpp`
 * `dpp run ./pipeline/id`
 
+
+### Updating the pipelines plus plus framework files
+
+If your project's code is committed to git, you can re-run `bin/init-pipelines-plus-plus.sh`
+
+(If there is an update to the init-pipelines script itself - run it twice)
+
+This will overwrite your files, and you can check with git what are the changes and decide how to merge them.
+
+The only file it will not overwrite is the docker-compose.override.yml file - which you must merge manually.
