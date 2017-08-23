@@ -21,7 +21,6 @@ if [ "${BASENAME}" != "datapackage-pipelines-plus-plus" ]; then
     copy bin/init-pipelines-plus-plus.sh
     copy bin/install.sh
     copy bin/start.sh
-    copy bin/update_compose.sh
     chmod +x bin/*.sh
 
     copy .env.example
