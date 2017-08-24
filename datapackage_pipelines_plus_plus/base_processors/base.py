@@ -57,8 +57,38 @@ class BaseProcessor(object):
         # allows to add a prefix / suffix to stat titles
         return stat
 
+    def _filter_row_value(self, resource_number, field_name, value):
+        return value
+
+    def _filter_row(self, resource_number, row):
+        yield {field_name: self._filter_row_value(resource_number, field_name, value)
+               for field_name, value in row.items()}
+
+    def _filter_resource(self, resource_number, resource_data):
+        for row in resource_data:
+            yield from self._filter_row(resource_number, row)
+
+    def _filter_resources(self, resources):
+        for resource_number, resource_data in enumerate(resources):
+            yield self._filter_resource(resource_number, resource_data)
+
+    def _get_resource_descriptor(self, resource_number):
+        return self._datapackage["resources"][resource_number]
+
     def _process(self, datapackage, resources):
-        raise NotImplementedError()
+        return self._filter_datapackage(datapackage), self._filter_resources(resources)
+
+    def _filter_datapackage(self, datapackage):
+        datapackage["resources"] = self._filter_resource_descriptors(datapackage["resources"])
+        return datapackage
+
+    def _filter_resource_descriptors(self, resource_descriptors):
+        return [self._filter_resource_descriptor(resource_number, resource_descriptor)
+                for resource_number, resource_descriptor
+                in enumerate(resource_descriptors)]
+
+    def _filter_resource_descriptor(self, resource_number, resource_descriptor):
+        return resource_descriptor
 
     def _warn_once(self, msg):
         if msg not in self._warned_once:

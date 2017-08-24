@@ -63,7 +63,7 @@ class Processor(BaseDumpProcessor):
         # force a new session on next commit
         self._db_session = None
 
-    def _filter_resource(self, resource_data):
+    def _filter_resource(self, resource_number, resource_data):
         self._update_keys = self._schema["primaryKey"]
         if not self._update_keys or len(self._update_keys) == 0:
             raise Exception("dump requires a primaryKey")
@@ -76,7 +76,7 @@ class Processor(BaseDumpProcessor):
             self._db_meta = None
             self._set_stat("dropped table", True)
             logging.info("table dropped: {}".format(self._tablename))
-        yield from super(Processor, self)._filter_resource(resource_data)
+        yield from super(Processor, self)._filter_resource(resource_number, resource_data)
 
     @property
     def _log_prefix(self):

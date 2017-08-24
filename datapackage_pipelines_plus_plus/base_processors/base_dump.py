@@ -19,8 +19,8 @@ class BaseDumpProcessor(FilterResourceBaseProcessor):
             self._commit(self._rows_buffer)
             self._rows_buffer = []
 
-    def _filter_row(self, row):
-        for row in super(BaseDumpProcessor, self)._filter_row(row):
+    def _filter_row(self, resource_number, row):
+        for row in super(BaseDumpProcessor, self)._filter_row(resource_number, row):
             self._row_num += 1
             if self._commit_buffer_length > 1:
                 if self._row_num%self._commit_buffer_length == 0:

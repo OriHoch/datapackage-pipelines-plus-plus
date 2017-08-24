@@ -21,7 +21,7 @@ class Processor(AddResourceBaseProcessor):
         schema["fields"] = fields
         return schema
 
-    def _get_resource(self):
+    def _get_new_resource(self):
         for i in range(self._parameters["num-rows"]):
             j = int(i/self._parameters["num-rows"]*100)
             row = {}

@@ -56,7 +56,7 @@ class Processor(BaseDumpProcessor):
         self._incr_stat("indexed docs", len(actions))
         logging.info("{}: commit ({} indexed)".format(self._log_prefix, self._get_stat("indexed docs")))
 
-    def _filter_resource(self, resource_data):
+    def _filter_resource(self, resource_number, resource_data):
         self._update_keys = self._schema["primaryKey"]
         if not self._update_keys or len(self._update_keys) == 0:
             raise Exception("dump requires a primaryKey")
@@ -69,7 +69,7 @@ class Processor(BaseDumpProcessor):
         else:
             raise Exception("updating existing index is not supported")
         self._create_index()
-        yield from super(Processor, self)._filter_resource(resource_data)
+        yield from super(Processor, self)._filter_resource(resource_number, resource_data)
 
     @property
     def _log_prefix(self):
