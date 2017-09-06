@@ -36,24 +36,28 @@ class Processor(BaseDumpProcessor):
         mapper(Model, self.db_table)
         return Model
 
+    def _get_row_key(self, row):
+        return "-".join([row[k] for k in self._update_keys])
+
+    def _is_row_in(self, row, rows):
+        return self._get_row_key(row) in [self._get_row_key(r) for r in rows]
+
     def _commit(self, rows):
         self.db_connect(retry=True)
         mapper = self._get_mapper()
         update_rows = []
         insert_rows = []
         for row in rows:
-            filter_args = (getattr(self.db_table.c, field)==row[field] for field in self._update_keys)
-            if self.db_session.query(self.db_table).filter(*filter_args).count() > 0:
-                update_rows.append(row)
-            else:
-                insert_rows.append(row)
+            if not self._is_row_in(row, update_rows + insert_rows):
+                filter_args = (getattr(self.db_table.c, field)==row[field] for field in self._update_keys)
+                if self.db_session.query(self.db_table).filter(*filter_args).count() > 0:
+                    update_rows.append(row)
+                else:
+                    insert_rows.append(row)
         if len(insert_rows) > 0:
             self.db_session.bulk_insert_mappings(mapper, insert_rows)
             self._incr_stat("inserted rows", len(insert_rows))
         if len(update_rows) > 0:
-            if self._get_stat("created table"):
-                logging.info(update_rows[-1])
-                raise Exception("table was just created, how come we are updating rows!?!?!")
             self.db_session.bulk_update_mappings(mapper, update_rows)
             self._incr_stat("updated rows", len(update_rows))
         self.db_commit()
